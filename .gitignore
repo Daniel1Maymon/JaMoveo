@@ -1,0 +1,32 @@
+# Python compiled files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment
+.venv/
+myven/
+
+
+# Environment variables
+.env
+config.py
+
+# Logs and database files
+*.log
+*.sqlite3
+
+# Tests results
+*.coverage
+.tox/
+.cache/
+
+# Pytest
+.pytest_cache/
+
+# Config files
+config/__pycache__/
+
+# System files
+.DS_Store
+Thumbs.db
