@@ -2,11 +2,33 @@ import bcrypt
 import jwt
 from datetime import datetime, timedelta
 from config.config import Config
+from app.models.user_model import User
 
 class AuthService:
     @staticmethod
-    def hash_password(password):
-        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
+    def register_user(username, password, instrument, role):
+        if User.find_by_username(username):
+            raise ValueError("Username already exists")
+
+        hashed_password = AuthService.hash_password(password)
+        user_data = {
+            "username": username,
+            "password": hashed_password,
+            "instrument": instrument,
+            "role": role
+        }
+        User.create_user(user_data)
+
+
+    @staticmethod
+    def login_user(username, password):
+        user = User.find_by_username(username)
+        if not user or not AuthService.verify_password(password, user['password']):
+            raise ValueError("Invalid credentials")
+
+        token = AuthService.generate_jwt({"id": str(user['_id']), "username": username})
+        return token
+
 
     @staticmethod
     def verify_password(password, hashed_password):
@@ -16,3 +38,7 @@ class AuthService:
     def generate_jwt(payload):
         payload['exp'] = datetime.utcnow() + timedelta(hours=1)
         return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
+
+    @staticmethod
+    def hash_password(password):
+        return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')

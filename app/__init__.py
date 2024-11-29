@@ -13,6 +13,9 @@ def create_app():
 
     # Register Blueprints
     from app.controllers.auth_controller import auth_bp
+    from app.controllers.session_controller import session_bp
+    
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(session_bp, url_prefix="/session")
 
     return app
