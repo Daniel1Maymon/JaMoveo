@@ -2,11 +2,14 @@ from flask import Flask, json
 from flask_pymongo import PyMongo
 from app.utils.initializations import load_songs_from_folder
 from config.config import Config
+from flask_cors import CORS
 
 mongo = PyMongo()
 
 def create_app():
     app = Flask(__name__)
+    CORS(app) 
+    
     app.config.from_object(Config)
     
     # Initialize MongoDB
