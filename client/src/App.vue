@@ -1,10 +1,11 @@
 <template>
   <div id="app">
-    <header>
+    <header v-if="showHeader">
       <h1>JaMoveo</h1>
       <nav>
         <router-link to="/">Home</router-link>
         <router-link to="/login">Login</router-link>
+        <router-link to="/register">Register</router-link>
       </nav>
     </header>
     <main>
@@ -17,6 +18,13 @@
 <script>
 export default {
   name: "App",
+  computed: {
+    // Determine whether to show the header based on the current route
+    showHeader() {
+      const hiddenRoutes = ["/player", '/admin']; // Add paths where the header should be hidden
+      return !hiddenRoutes.includes(this.$route.path);
+    },
+  },
 };
 </script>
 
@@ -28,7 +36,7 @@ body {
 }
 
 header {
-  background-color: #42b983;
+  background-color: #008080;
   color: white;
   padding: 10px;
   text-align: center;
@@ -45,6 +53,6 @@ nav a {
 }
 
 main {
-  padding: 20px;
+  padding: 10px;
 }
 </style>

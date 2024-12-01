@@ -1,11 +1,6 @@
 <template>
-  <div>
+  <div class="home-container">
     <h2>Welcome to JaMoveo</h2>
-    <ul>
-      <li v-for="song in songs" :key="song.id">
-        {{ song.title }} by {{ song.artist }}
-      </li>
-    </ul>
   </div>
 </template>
 
@@ -16,20 +11,24 @@ export default {
       songs: [],
     };
   },
-  async mounted() {
-    const response = await fetch("http://127.0.0.1:5000/song/songs");
-    this.songs = await response.json();
-  },
+  // async mounted() {
+  //   const response = await fetch("http://127.0.0.1:5000/song/songs");
+  //   this.songs = await response.json();
+  // },
 };
 </script>
 
 <style>
-ul {
-  list-style: none;
-  padding: 0;
+
+.home-container {
+  margin-top: 20px;
+  text-align: center; 
 }
 
-li {
-  margin: 10px 0;
+
+h2 {
+  font-size: 24px;
+  color: black;
+  margin: 0;
 }
 </style>

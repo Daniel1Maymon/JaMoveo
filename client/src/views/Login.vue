@@ -22,14 +22,8 @@
           required
         />
       </div>
-      <div class="form-options">
-        <label>
-          <input type="checkbox" v-model="rememberMe" />
-          Remember Me
-        </label>
-        <a href="#">Forgot Password?</a>
-      </div>
       <button type="submit" class="login-button">Login</button>
+      <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
     </form>
   </div>
 </template>
@@ -40,22 +34,87 @@ export default {
     return {
       username: "",
       password: "",
-      rememberMe: false,
+      errorMessage: null,
     };
   },
   methods: {
-    handleLogin() {
-      if (!this.username || !this.password) {
-        alert("Please fill in all fields.");
-        return;
-      }
-      alert(`Username: ${this.username}, Password: ${this.password}`);
-    },
+  async handleLogin() {
+  try {
+    const response = await fetch("http://127.0.0.1:5000/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        username: this.username,
+        password: this.password,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      this.errorMessage = error.error || "An error occurred";
+      return;
+    }
+
+    console.log("auth/login SUCCESS!")
+    const data = await response.json();
+    this.errorMessage = null;
+
+    console.log("data = ")
+    console.log(data)
+
+
+    // Temporary test: Check access to a protected endpoint
+    localStorage.setItem("access_token", data.token);
+    localStorage.setItem("role", data.role); // Save the role
+  
+
+    const token = localStorage.getItem("access_token"); // Retrieve the token from localStorage
+
+    console.log(`token = ${token}`)
+
+    const testResponse = await fetch("http://127.0.0.1:5000/auth/protected", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Include the token
+      },
+    });
+
+    console.log("AFTER auth/protected")
+    if (!testResponse.ok) {
+      console.error("Failed to access protected endpoint.");
+      const error = await testResponse.json();
+      console.error("Error:", error);
+      this.errorMessage = "Protected endpoint access failed.";
+      return;
+    }
+
+
+    console.log("auth/protected SUCCESS!")
+    const testData = await testResponse.json();
+    console.log("Protected endpoint data:", testData);
+
+
+    // Navigate based on role
+    console.log("data = " + data)
+
+    if (data.role === "admin") {
+      this.$router.push("/admin");
+    } else if (data.role === "player") {
+      this.$router.push("/player");
+    }
+  } catch (error) {
+    this.errorMessage = "Failed to connect to the server.";
+  }
+}
   },
 };
 </script>
 
 <style>
+/* Background and general body style */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -66,6 +125,7 @@ body {
   align-items: center;
 }
 
+/* Login container style */
 .login-container {
   background: rgba(255, 255, 255, 0.1);
   padding: 20px 40px;
@@ -77,10 +137,12 @@ body {
   width: 300px;
 }
 
+/* Title style */
 h2 {
   margin-bottom: 20px;
 }
 
+/* Form field styles */
 .form-group {
   margin-bottom: 15px;
   text-align: left;
@@ -110,25 +172,25 @@ input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-.form-options {
-  display: flex;
-  justify-content: space-between;
-  font-size: 12px;
-  margin-bottom: 15px;
-}
-
+/* Button style */
 .login-button {
   width: 100%;
   padding: 10px;
   border: none;
   border-radius: 5px;
-  background: #42b983;
+  background: #008080;
   color: white;
   font-size: 16px;
   cursor: pointer;
 }
 
 .login-button:hover {
-  background: #36a370;
+  background: #008080;
+}
+
+/* Error message style */
+.error {
+  color: red;
+  margin-top: 10px;
 }
 </style>
