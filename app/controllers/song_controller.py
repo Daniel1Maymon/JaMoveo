@@ -13,12 +13,25 @@ def get_songs():
 @song_bp.route('/search_songs', methods=['POST'])
 def search_songs():
     try:
-        query = request.json.get('query', '')
+        # Get the search query from the request body
+        query = request.json.get('query', '').strip()
+        
+        # Validate that query is not empty
+        if not query:
+            raise ValueError("Search query cannot be empty.")
+
+        # Call the service layer to search for songs
         songs = SongService.search_songs(query)
+
+        # Return the results
         return jsonify(songs), 200
     except ValueError as e:
+        # Return an error response for invalid inputs
         return jsonify({"error": str(e)}), 400
-    
+    except Exception as e:
+        # Handle any other unexpected errors
+        return jsonify({"error": "An unexpected error occurred.", "details": str(e)}), 500
+
     
 @song_bp.route('/select_song', methods=['POST'])
 @admin_required

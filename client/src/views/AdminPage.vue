@@ -1,207 +1,144 @@
 <template>
-  <div>
-    <h1>Admin Page</h1>
-    <p>Welcome to the admin panel. Only admins should see this page.</p>
-    <button @click="fetchSongs">Select Song</button>
-    <button @click="startSession">Start Session</button>
-    <p v-if="message">{{ message }}</p>
+  <div class="search-container">
+    <h1>Search for a Song</h1>
+    <input
+      v-model="query"
+      @input="searchSong"
+      type="text"
+      placeholder="Enter song name..."
+      class="input-field"
+    />
+    <div v-if="results.length > 0" class="results-container">
+      <div
+        v-for="result in results"
+        :key="result.id"
+        class="result-item"
+        @click="printResult(result)" 
+      >
+        <h3>{{ result.title }}</h3>
+      </div>
+    </div>
+    <p v-else-if="query && !loading">No results found.</p>
+    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
   </div>
-
-    <!-- Display the song list -->
-    <div v-if="songs.length > 0" class="song-list">
-    <h2>All Songs</h2>
-    <div v-for="song in songs" :key="song.id" class="song-item">
-        <div class="song-info">
-        <h3>{{ song.name }}</h3>
-        <p>{{ song.description }}</p>
-        </div>
-        <button class="select-button" @click="selectSong(song.name)">
-        Select
-        </button>
-    </div>
-    </div>
-
 </template>
 
 <script>
-import { io } from "socket.io-client";
-
-
 export default {
-  name: "AdminPage",
-    data() {
+  name: "AdminMainPage",
+  data() {
     return {
-        songs: [], // List of songs fetched from the server
-        selectedSong: "", // Song selected from the dropdown
+      query: "",
+      results: [], // Store search results
+      loading: false, // Indicate if a request is in progress
+      errorMessage: "", // Store error messages
     };
-    },
-
+  },
   methods: {
-    // Connect to WebSocket
-    connectSocket() {
-      this.socket = io("http://127.0.0.1:5000");
-
-      // Listen for session_started event
-      this.socket.on("session_started", (data) => {
-        this.message = data.message;
-        console.log("Session Started:", data);
-      });
-
-      // Listen for song_selected event
-      this.socket.on("song_selected", (data) => {
-        this.message = `Song Selected: ${data.song}`;
-        console.log("Song Selected:", data);
-      });
-
-      // Listen for session_ended event
-      this.socket.on("session_ended", (data) => {
-        this.message = data.message;
-        console.log("Session Ended:", data);
-      });
+    onButtonPress() {
+      this.buttonPressed = true;
     },
-
-    // Start a new session
-    async startSession() {
-    const token = localStorage.getItem("access_token"); // Retrieve the token from localStorage
-
-    console.log("sending token = ")
-    console.log(token)
+    onButtonRelease() {
+      this.buttonPressed = false;
+    },
+    printResult(result) {
+      console.log("Selected Result:", result);
+      console.log(result.id); 
+      console.log(result.title);
+    },
+    async searchSong() {
+      if (this.query.trim() === "") {
+        this.results = [];
+        this.errorMessage = "";
+        return;
+      }
+      this.loading = true; // Start loading indicator
+      this.errorMessage = ""; // Clear any previous error messages
       try {
-        const response = await fetch("http://127.0.0.1:5000/session/start_session", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`, // Include the token
-            },
+        const response = await fetch("http://127.0.0.1:5000/song/search_songs", {
+          method: "POST", // Use POST method
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ query: this.query }), // Send the query in the request body
         });
 
-        if (response.ok) {
-          console.log("Session started successfully");
-        } else {
+        if (!response.ok) {
           const errorData = await response.json();
-          this.message = errorData.error || "Failed to start session";
+          this.errorMessage = errorData.error || "An error occurred.";
+          this.results = [];
+        } else {
+          this.results = await response.json(); // Populate results
         }
       } catch (error) {
-        this.message = "An error occurred while starting the session.";
-        console.error(error);
+        console.error("Error searching for songs:", error);
+        this.errorMessage = "Failed to fetch results. Please try again.";
+      } finally {
+        this.loading = false; // Stop loading indicator
       }
     },
-
-    // Select a song
-    async selectSong() {
-    const token = localStorage.getItem("access_token");
-
-    try {
-        const response = await fetch("http://127.0.0.1:5000/session/select_song", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ song: this.selectedSong }),
-        });
-
-        if (response.ok) {
-        console.log("Song selected successfully");
-        } else {
-        const errorData = await response.json();
-        console.error("Failed to select song:", errorData);
-        }
-    } catch (error) {
-        console.error("An error occurred while selecting the song:", error);
-    }
-    },
-
-    async fetchSongs() {
-    const token = localStorage.getItem("access_token");
-
-    try {
-        const response = await fetch("http://127.0.0.1:5000/song/songs", {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-        },
-        });
-
-        if (response.ok) {
-        this.songs = await response.json();
-        console.log("Songs fetched successfully:", this.songs);
-        } else {
-        const errorData = await response.json();
-        console.error("Failed to fetch songs:", errorData);
-        }
-    } catch (error) {
-        console.error("An error occurred while fetching songs:", error);
-    }
-    },
-  },
-  mounted() {
-    // Connect to WebSocket when component is mounted
-    this.connectSocket();
-  },
-  beforeDestroy() {
-    // Disconnect from WebSocket when component is destroyed
-    if (this.socket) {
-      this.socket.disconnect();
-    }
   },
 };
 </script>
 
-
-
-<style>
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-}
-
-header {
-  background-color: #008080;
-  color: white;
-  padding: 10px;
-  text-align: center;
-}
-
-nav {
-  margin: 10px 0;
-}
-
-nav a {
-  margin: 0 10px;
-  color: white;
-  text-decoration: none;
-}
-
-main {
-  padding: 10px;
-}
-
-button {
-  background-color: #42b983;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-  margin-right: 100px;
-   align-items: flex-start;
-}
-
-button:hover {
-  background-color: #2c8c6b;
-}
-
-select {
+<style scoped>
+/* Results container styling */
+.results-container {
   margin-top: 10px;
-  padding: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
+.result-item {
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+  transition: box-shadow 0.3s ease; /* Add transition for hover effect */
+  cursor: pointer;
+}
+
+.result-item:last-child {
+  border-bottom: none;
+}
+
+.result-item h3 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.result-item p {
+  margin: 0;
+  color: #666;
+}
+
+.result-item:active {
+  background-color: #e0e0e0; /* Slightly darker gray */
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.result-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  background-color: #f0f0f0; /* Light gray background */
+}
+
+.select-button {
+  padding: 8px 16px;
+  border: none;
+  background-color: #2575fc;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer; /* Change the cursor to a pointer */
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.select-button:active {
+  transform: scale(0.95);
+  background-color: #1a5dbf;
+}
 
 </style>

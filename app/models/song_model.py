@@ -18,13 +18,15 @@ class Song:
     
     @staticmethod
     def search_by_query(query):
-        return list(mongo.db.songs.find(
-            {"$or": [
-                {"title": {"$regex": query, "$options": "i"}},
-                {"artist": {"$regex": query, "$options": "i"}}
-            ]},
-            {"_id": 0}
-        ))
+        regex = {"$regex": query, "$options": "i"}  # Case-insensitive search
+        songs = mongo.db.songs.find(
+            {"title": regex},
+            {"title": 1}  # Return only title and _id
+        )
+        return [
+            {"id": str(song["_id"]), "title": song["title"]}
+            for song in songs
+        ]
         
     @staticmethod
     def find_by_id(song_id):
