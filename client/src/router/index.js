@@ -4,6 +4,7 @@ import Login from "../views/Login.vue";
 import Register from "../views/Register.vue";
 import AdminPage from '../views/AdminPage.vue';
 import PlayerPage from '../views/PlayerPage.vue';
+import LivePage from '../views/LivePage.vue';
 
 const routes = [
   {
@@ -22,7 +23,8 @@ const routes = [
   { path: "/player", name: "Player", component: PlayerPage },
   { path: "/", name: "Home", component: Home },
   { path: "/login", name: "Login", component: Login },
-  { path: "/register", name: "Register", component: Register }
+  { path: "/register", name: "Register", component: Register },
+  { path: "/live", name: "Live", component: LivePage }
 ];
 
 const router = createRouter({

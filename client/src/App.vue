@@ -21,7 +21,7 @@ export default {
   computed: {
     // Determine whether to show the header based on the current route
     showHeader() {
-      const hiddenRoutes = ["/player", '/admin']; // Add paths where the header should be hidden
+      const hiddenRoutes = ["/player", '/admin', '/live']; // Add paths where the header should be hidden
       return !hiddenRoutes.includes(this.$route.path);
     },
   },
