@@ -1,7 +1,7 @@
 from flask import Blueprint, request, jsonify
 
 from app.services.auth_service import AuthService
-
+from flask_jwt_extended import jwt_required
 auth_bp = Blueprint(name='auth', import_name=__name__)
 
 @auth_bp.route('/register', methods=['POST'])
@@ -47,9 +47,30 @@ def login():
     password = data.get('password')
 
     try:
-        token = AuthService.login_user(username, password)
+        result = AuthService.login_user(username, password)
+        token = result["token"]
+        role = result["role"]
     except ValueError as e:
         return jsonify({"error": str(e)}), 401
 
-    return jsonify({"token": token}), 200
+    return jsonify({"token": token, "role": role}), 200
 
+
+@auth_bp.route('/protected', methods=['GET'])
+@jwt_required()  # Requires a valid JWT to access
+def protected():
+    # Get the current user identity from the token
+    current_user = AuthService.get_jwt_identity()
+    return jsonify({"message": "Welcome!", "user": current_user}), 200
+
+@auth_bp.route('/admin-only', methods=['GET'])
+@jwt_required()  # Requires a valid JWT to access
+def admin_only():
+    # Get the current user identity from the token
+    current_user = AuthService.get_jwt_identity()
+    print(f"current_user: \n{current_user}")
+    
+    # Check if the user role is Admin
+    if current_user['role'] != 'admin':
+        return jsonify({"error": "Access denied"}), 403
+    return jsonify({"message": "Welcome, Admin!"}), 200

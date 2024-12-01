@@ -2,6 +2,32 @@ from app.models.session_model import Session
 import uuid
 
 class SessionService:
+    
+    @staticmethod
+    def start_session():
+        existing_session = Session.get_active_session()
+        if existing_session:
+            raise ValueError("An active session already exists")
+
+       # Create a new session
+        session_data = {
+            "_id": "session",  # Always use the same ID for the single session
+            "is_active": True,
+            "current_song": None,
+            "users_connected": []
+        }
+
+        try:
+            # Call the model to create or update the session
+            Session.create_or_update_session(session_data)
+            
+            # Retrieve the updated or created session
+            updated_session = Session.find_by_id(session_id="session")
+        except Exception as e:
+            raise RuntimeError("Failed to start session") from e
+
+        return updated_session
+    
     @staticmethod
     def create_session(name, admin_id):
         if Session.get_active_session():
@@ -17,7 +43,7 @@ class SessionService:
         }
 
         try:
-            Session.create_session(session_data)
+            Session.create_or_update_session(session_data)
         except Exception as e:
             raise RuntimeError("Failed to create session") from e
 
