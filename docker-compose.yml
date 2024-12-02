@@ -3,8 +3,9 @@ version: '3.8'
 services:
   backend:
     build:
-      context: ./backend
-      dockerfile: ../docker/Dockerfile.backend
+      context: .
+      dockerfile: ./docker/Dockerfile.backend
+    container_name: backend-container
     ports:
       - "5000:5000"
     environment:
@@ -14,7 +15,9 @@ services:
 
   frontend:
     build:
-      context: ./frontend
-      dockerfile: ../docker/Dockerfile.fronten
+      context: .
+      dockerfile: ./docker/Dockerfile.frontend
+    container_name: client-container
     ports:
       - "80:80"
+
