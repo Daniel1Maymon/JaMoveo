@@ -41,19 +41,16 @@ class AuthService:
 
     @staticmethod
     def verify_password(password, hashed_password):
-        # Verify the password against the stored hash
         return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
     @staticmethod
     def generate_jwt(payload):
-        # Generate a JWT with the provided identity (e.g., username and role)
-        payload['sub'] = payload.get('username')  # Use the username as 'sub'
-        payload['exp'] = datetime.utcnow() + timedelta(hours=1)  # Set token expiration
+        payload['sub'] = payload.get('username')
+        payload['exp'] = datetime.utcnow() + timedelta(hours=1)
         return jwt.encode(payload, Config.SECRET_KEY, algorithm='HS256')
 
     @staticmethod
     def hash_password(password):
-        # Hash the password using bcrypt for secure storage
         return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
     @staticmethod

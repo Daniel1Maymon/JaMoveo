@@ -24,12 +24,11 @@ class SongService:
     @staticmethod
     def select_song(song_id):
         try:
-            # Fetch the song using the model
             song = Song.find_by_id(song_id)
             if not song:
                 raise ValueError("Song not found")
             return song
         except ValueError as e:
-            raise  # Pass the ValueError up to the Controller
+            raise 
         except Exception as e:
             raise RuntimeError("Failed to select song") from e

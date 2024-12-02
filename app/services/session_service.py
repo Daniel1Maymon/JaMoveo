@@ -9,19 +9,15 @@ class SessionService:
         if existing_session:
             raise ValueError("An active session already exists")
 
-       # Create a new session
         session_data = {
-            "_id": "session",  # Always use the same ID for the single session
+            "_id": "session",
             "is_active": True,
             "current_song": None,
             "users_connected": []
         }
 
         try:
-            # Call the model to create or update the session
             Session.create_or_update_session(session_data)
-            
-            # Retrieve the updated or created session
             updated_session = Session.find_by_id(session_id="session")
         except Exception as e:
             raise RuntimeError("Failed to start session") from e

@@ -9,7 +9,6 @@
       </nav>
     </header>
     <main>
-      <!-- Place for more components-->
       <router-view></router-view>
     </main>
   </div>
@@ -19,9 +18,8 @@
 export default {
   name: "App",
   computed: {
-    // Determine whether to show the header based on the current route
     showHeader() {
-      const hiddenRoutes = ["/player", '/admin', '/live']; // Add paths where the header should be hidden
+      const hiddenRoutes = ["/player", '/admin', '/live']; 
       return !hiddenRoutes.includes(this.$route.path);
     },
   },

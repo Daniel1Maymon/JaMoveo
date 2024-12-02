@@ -57,20 +57,20 @@ def login():
 
 
 @auth_bp.route('/protected', methods=['GET'])
-@jwt_required()  # Requires a valid JWT to access
+@jwt_required() 
 def protected():
-    # Get the current user identity from the token
+    
     current_user = AuthService.get_jwt_identity()
     return jsonify({"message": "Welcome!", "user": current_user}), 200
 
 @auth_bp.route('/admin-only', methods=['GET'])
-@jwt_required()  # Requires a valid JWT to access
+@jwt_required() 
 def admin_only():
-    # Get the current user identity from the token
+    
     current_user = AuthService.get_jwt_identity()
     print(f"current_user: \n{current_user}")
     
-    # Check if the user role is Admin
+    
     if current_user['role'] != 'admin':
         return jsonify({"error": "Access denied"}), 403
     return jsonify({"message": "Welcome, Admin!"}), 200

@@ -11,10 +11,6 @@ export default {
       songs: [],
     };
   },
-  // async mounted() {
-  //   const response = await fetch("http://127.0.0.1:5000/song/songs");
-  //   this.songs = await response.json();
-  // },
 };
 </script>
 

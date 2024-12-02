@@ -30,14 +30,14 @@ export default {
   name: "PlayerPage",
   data() {
     return {
-      isLive: false, // Indicates if a song is selected
+      isLive: false, 
       song: {
         title: "",
         artist: "",
         lyrics: "",
         chords: "",
       },
-      instrument: localStorage.getItem("instrument") || "player", // Default to player
+      instrument: localStorage.getItem("instrument") || "player", 
     };
   },
   methods: {
@@ -51,7 +51,6 @@ export default {
     },
   },
   created() {
-    // Simulating socket connection for live updates
     const socket = new WebSocket("ws://127.0.0.1:5000");
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);

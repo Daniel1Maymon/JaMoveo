@@ -4,7 +4,7 @@ from app.services.auth_service import AuthService
 from app.utils.auth import admin_required
 from flask_socketio import emit
 import traceback
-from app import socketio  # Import the global socketio object
+from app import socketio  
 
 session_bp = Blueprint(name='session', import_name=__name__)
 
@@ -14,15 +14,15 @@ session_bp = Blueprint(name='session', import_name=__name__)
 def start_session():
     try:
         current_user = AuthService.get_jwt_identity()
-        print(f"Current user: {current_user}")  # Log the current user
+        print(f"Current user: {current_user}") 
         session = SessionService.start_session()
         
-        # Use socketio.emit for broadcasting
+        
         socketio.emit("session_started", {"message": "Session has started"}, to='/')
     except ValueError as e:
         return jsonify({"error": str(e)}), 400
     except Exception as e:
-        # Log the full traceback for debugging
+        
         error_trace = traceback.format_exc()
         print(f"Unexpected error: {error_trace}")
         return jsonify({"error": f"An unexpected error occurred: {str(e)}"}), 500

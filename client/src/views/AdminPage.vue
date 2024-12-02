@@ -29,7 +29,7 @@ export default {
     data() {
     return {
         query: "",
-        results: [], // Always initialized as an empty array
+        results: [],
         loading: false,
         errorMessage: "",
     };
@@ -43,7 +43,7 @@ export default {
     },
    async searchSong() {
     if (this.query.trim() === "") {
-      this.results = []; // Reset results
+      this.results = []; 
       this.errorMessage = "";
       return;
     }
@@ -61,15 +61,15 @@ export default {
     if (!response.ok) {
       const errorData = await response.json();
       this.errorMessage = errorData.error || "An error occurred.";
-      this.results = []; // Reset results
+      this.results = [];
     } else {
       const data = await response.json();
-      this.results = Array.isArray(data) ? data : []; // Ensure results is an array
+      this.results = Array.isArray(data) ? data : [];
     }
   } catch (error) {
     console.error("Error searching for songs:", error);
     this.errorMessage = "Failed to fetch results. Please try again.";
-    this.results = []; // Reset results on error
+    this.results = []; 
   } finally {
     this.loading = false;
   }

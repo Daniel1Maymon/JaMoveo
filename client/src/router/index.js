@@ -11,12 +11,12 @@ const routes = [
     path: '/admin',
     component: AdminPage,
     beforeEnter: (to, from, next) => {
-      const role = localStorage.getItem('role'); // Check the user's role
+      const role = localStorage.getItem('role');
       if (role === 'admin') {
-        next(); // Allow access if the user is an admin
+        next(); 
       } else {
         alert("Access denied: Admins only");
-        next('/player'); // Redirect unauthorized users
+        next('/player'); 
       }
     },
   },

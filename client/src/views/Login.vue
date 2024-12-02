@@ -65,12 +65,11 @@ export default {
     console.log(data)
 
 
-    // Temporary test: Check access to a protected endpoint
     localStorage.setItem("access_token", data.token);
-    localStorage.setItem("role", data.role); // Save the role
+    localStorage.setItem("role", data.role);
   
 
-    const token = localStorage.getItem("access_token"); // Retrieve the token from localStorage
+    const token = localStorage.getItem("access_token"); 
 
     console.log(`token = ${token}`)
 
@@ -78,7 +77,7 @@ export default {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Include the token
+        Authorization: `Bearer ${token}`,
       },
     });
 
@@ -97,7 +96,6 @@ export default {
     console.log("Protected endpoint data:", testData);
 
 
-    // Navigate based on role
     console.log("data = " + data)
 
     if (data.role === "admin") {
@@ -114,7 +112,6 @@ export default {
 </script>
 
 <style>
-/* Background and general body style */
 body {
   font-family: Arial, sans-serif;
   margin: 0;
@@ -125,7 +122,6 @@ body {
   align-items: center;
 }
 
-/* Login container style */
 .login-container {
   background: rgba(255, 255, 255, 0.1);
   padding: 20px 40px;
@@ -137,12 +133,10 @@ body {
   width: 300px;
 }
 
-/* Title style */
 h2 {
   margin-bottom: 20px;
 }
 
-/* Form field styles */
 .form-group {
   margin-bottom: 15px;
   text-align: left;
@@ -172,7 +166,6 @@ input::placeholder {
   color: rgba(255, 255, 255, 0.6);
 }
 
-/* Button style */
 .login-button {
   width: 100%;
   padding: 10px;
@@ -188,7 +181,6 @@ input::placeholder {
   background: #008080;
 }
 
-/* Error message style */
 .error {
   color: red;
   margin-top: 10px;

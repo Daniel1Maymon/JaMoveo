@@ -4,13 +4,9 @@ from dotenv import load_dotenv
 load_dotenv(dotenv_path=os.path.join(os.path.dirname(__file__), '../.env'))
 
 class Config:
-    SECRET_KEY = os.getenv("SECRET_KEY", 'NEEDAD')
+    SECRET_KEY = os.getenv("SECRET_KEY", "default_secret_key")
 
-    MONGO_URI = os.getenv("MONGO_URI", 'NEEDAD'
-)
-    TEST_VAR = os.getenv("TEST", 'FAILED TO LOAD THE VIRTUAL ENV')
-    
-    # MONGO_URI = "mongodb+srv://<username>:<password>@<cluster-name>.mongodb.net/<DB_name>"
+    MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/defaultdb")
 
     BASE_DIR = os.path.abspath(os.path.dirname(__file__))
     SONGS_DIR = os.path.join(BASE_DIR, '../app/songs')

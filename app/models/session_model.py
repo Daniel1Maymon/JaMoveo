@@ -3,14 +3,12 @@ from app import mongo
 class Session:
     @staticmethod
     def create_or_update_session(session_data):
-        # Update or create a session with _id = "session"
         updated_session = mongo.db.sessions.update_one(
-            {"_id": "session"},  # Find a document with _id = "session"
-            {"$set": session_data},  # Update the document
-            upsert=True  # Create a new document if it doesn't exist
+            {"_id": "session"}, 
+            {"$set": session_data}, 
+            upsert=True 
         )
         
-        # return updated_session
 
     @staticmethod
     def find_by_id(session_id):

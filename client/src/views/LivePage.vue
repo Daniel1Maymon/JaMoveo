@@ -1,19 +1,14 @@
 <template>
   <div class="live-container">
     <h1>Now Playing</h1>
-    <!-- <p><strong>Song ID:</strong> {{ songId }}</p>
-    <p><strong>Title:</strong> {{ songTitle }}</p> -->
 
     <div class="song-lyrics">
-      <!-- Iterate over the lines of the song -->
       <div v-for="(lineGroup, index) in songContent" :key="index" class="song-line-group">
-        <!-- Display chords on one line -->
         <div class="song-line">
           <span v-for="(word, wordIndex) in lineGroup" :key="wordIndex" class="chords">
             {{ word.chords ? word.chords : '' }}
           </span>
         </div>
-        <!-- Display lyrics on the next line -->
         <div class="song-line">
           <span v-for="(word, wordIndex) in lineGroup" :key="wordIndex" class="lyrics">
             {{ word.lyrics }}
@@ -22,10 +17,8 @@
       </div>
     </div>
 
-    <!-- Add a floating button to control auto-scrolling -->
     <button class="scroll-toggle">Start/Stop Scrolling</button>
 
-    <!-- Add a quit button for the admin -->
     <button class="quit-button">Quit</button>
   </div>
 </template>
@@ -37,12 +30,12 @@ export default {
     return {
       songId: null,
       songTitle: "",
-      songContent: [], // Will be populated from the API response
+      songContent: [], 
     };
   },
   mounted() {
     const songData = localStorage.getItem("songData");
-    const token = localStorage.getItem("access_token"); // Retrieve the token from localStorage
+    const token = localStorage.getItem("access_token");
 
     if (songData && token) {
       const parsedSongData = JSON.parse(songData);
@@ -51,7 +44,6 @@ export default {
       console.log("Loaded songData from localStorage:", parsedSongData);
       console.log("Loaded authToken from localStorage:", token);
 
-      // Call the API to fetch the song details
       this.fetchSongDetails(token);
     } else {
       console.log("No songData or authToken found in localStorage.");
@@ -65,7 +57,7 @@ export default {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`, // Include the token
+            Authorization: `Bearer ${token}`, 
           },
           body: JSON.stringify({
             song_id: this.songId,
@@ -78,7 +70,7 @@ export default {
 
         const song = await response.json();
         this.songTitle = song.message || "Unknown Title";
-        this.songContent = song.song.content; // Assuming the content is inside `song.song.content`
+        this.songContent = song.song.content;
         console.log("Fetched song details:", song);
       } catch (error) {
         console.error("Error fetching song details:", error);
@@ -89,9 +81,8 @@ export default {
 </script>
 
 <style scoped>
-/* Gradient background for the page */
 body {
-  background: linear-gradient(to right, #8e2de2, #4a00e0); /* Gradient colors */
+  background: linear-gradient(to right, #8e2de2, #4a00e0);
   color: #fff;
   font-family: 'Roboto', sans-serif;
   font-size: 24px;
@@ -101,7 +92,6 @@ body {
   text-align: center;
 }
 
-/* Styling for song lyrics and chords */
 .song-lyrics {
   margin-top: 30px;
   padding: 20px;
@@ -122,17 +112,16 @@ body {
 
 .chords {
   font-weight: bold;
-  color: #ffcc00; /* Highlighted chord color */
+  color: #ffcc00; 
   margin-right: 10px;
 }
 
 .lyrics {
   margin-right: 10px;
-  word-wrap: break-word; /* Prevent words from overflowing the container */
-  display: inline; /* Ensures the lyrics are shown inline with the chords */
+  word-wrap: break-word; 
+  display: inline; 
 }
 
-/* Floating buttons (auto-scroll and quit) */
 .scroll-toggle,
 .quit-button {
   position: fixed;
@@ -147,6 +136,6 @@ body {
 }
 
 .quit-button {
-  background-color: #e74c3c; /* Red color for quit button */
+  background-color: #e74c3c; 
 }
 </style>

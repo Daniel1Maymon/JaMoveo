@@ -92,14 +92,12 @@ export default {
         this.successMessage = data.message || "Registration successful!";
         this.errorMessage = null;
 
-        // Clear form fields
         this.username = "";
         this.password = "";
         this.confirmPassword = "";
         this.instrument = "";
 
-        // Navigate to login page
-        this.$router.push("/login"); // Vue Router navigation
+        this.$router.push("/login"); 
       } catch (error) {
         this.errorMessage = "Failed to connect to the server.";
       }
