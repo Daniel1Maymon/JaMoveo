@@ -10,7 +10,6 @@ myven/
 
 # Environment variables
 .env
-config.py
 
 # Logs and database files
 *.log
