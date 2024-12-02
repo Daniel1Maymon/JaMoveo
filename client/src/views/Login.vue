@@ -40,7 +40,7 @@ export default {
   methods: {
   async handleLogin() {
   try {
-    const response = await fetch("https://considerate-nourishment.railway.internal:5000/auth/login", {
+    const response = await fetch("https://considerate-nourishment-production.up.railway.app:5000/auth/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
