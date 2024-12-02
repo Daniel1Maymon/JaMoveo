@@ -1,4 +1,6 @@
 # JaMoveo
+![Project Pages](project-pages.jpg "Screenshot of Project Pages")
+
 
 JaMoveo is a web application built with Flask (backend) and Vue.js (frontend), using MongoDB as the database. The project is fully containerized with Docker and Docker Compose for easy setup and deployment.
 
