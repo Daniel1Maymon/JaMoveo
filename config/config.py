@@ -1,5 +1,6 @@
 import os
-import secrets
+from dotenv import load_dotenv
+load_dotenv()
 
 class Config:
     # SECRET_KEY = secrets.token_hex(32)

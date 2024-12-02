@@ -1,5 +1,5 @@
 import traceback
-from app.models.song_model import Song # type: ignore
+from app.models.song_model import Song 
 
 class SongService:
     @staticmethod
@@ -15,13 +15,10 @@ class SongService:
             raise ValueError("Query parameter is required")
         
         try:
-            # Call the model layer to perform the query
             return Song.search_by_query(query)
         except Exception as e:
-            # Log the full traceback for debugging
             error_trace = traceback.format_exc()
             print(f"Unexpected error: {error_trace}")
-            # Raise a runtime error with a descriptive message
             raise RuntimeError("Failed to search songs") from e
     
     @staticmethod
